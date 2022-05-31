@@ -1,0 +1,100 @@
+--SELECT column_name [, column_name ]
+--FROM table1 [, table2 ]
+--WHERE column_name OPERATOR
+--   (SELECT column_name [, column_name ]
+--   FROM table1 [, table2 ]
+--   WHERE condition);
+
+-- Execute a failing query (i.e. one which gives an error) to retrieve 
+-- all employees records whose salary is lower than the average salary.
+
+--select * 
+--from employees 
+--where salary < AVG(salary);
+
+-- Execute a working query using a sub-select to retrieve all 
+-- employees records whose salary is lower than the average salary.
+
+--select EMP_ID, F_NAME, L_NAME, SALARY 
+--from employees 
+--where SALARY < (select AVG(SALARY) 
+--                from employees);
+
+-- Execute a failing query (i.e. one which gives an error) to retrieve 
+-- all employees records with EMP_ID, SALARY and maximum salary as MAX_SALARY in every row.
+
+--select EMP_ID, SALARY, MAX(SALARY) AS MAX_SALARY 
+--from employees;	
+
+-- Execute a Column Expression that retrieves all employees records 
+-- with EMP_ID, SALARY and maximum salary as MAX_SALARY in every row.
+
+--select EMP_ID, SALARY, ( select MAX(SALARY) from employees ) AS MAX_SALARY 
+--from employees;
+
+-- Execute a Table Expression for the EMPLOYEES table that excludes columns with sensitive employee 
+-- data (i.e. does not include columns: SSN, B_DATE, SEX, ADDRESS, SALARY).
+
+--select * from 
+--	( select EMP_ID, F_NAME, L_NAME, DEP_ID from employees) AS EMP4ALL;
+
+-- JOINS & Sub-Queries
+
+-- How does an Implicit version of CROSS JOIN (also known as Cartesian Join) statement syntax look?
+
+-- SELECT column_name(s)
+-- FROM table1, table2;
+
+-- How does an Implicit version of INNER JOIN statement syntax look?
+--
+-- SELECT column_name(s)
+-- FROM table1, table2
+-- WHERE table1.column_name = table2.column_name;
+
+-- Exercise 1: Accessing Multiple Tables with Sub-Queries
+
+-- Retrieve only the EMPLOYEES records that correspond to jobs in the JOBS table.
+
+--SELECT * FROM EMPLOYEES 
+--WHERE JOB_ID IN (SELECT JOB_ID FROM JOBS)
+
+-- Retrieve only the list of employees whose JOB_TITLE is Jr. Designer.
+
+--SELECT * FROM EMPLOYEES
+--WHERE JOB_ID IN (SELECT JOB_IDENT From JOBS WHERE JOB_TITLE = 'Jr. Designer')
+
+-- Retrieve JOB information and who earn more than $70,000.
+
+--SELECT JOB_TITLE,MAX_SALARY,JOB_IDENT FROM JOBS 
+--WHERE JOB_IDENT IN (SELECT JOB_ID FROM EMPLOYEES where SALARY > 70000.00)
+
+-- Retrieve JOB information and whose birth year is after 1976.
+
+--SELECT JOB_TITLE, MIN_SALARY, MAX_SALARY, JOB_IDENT FROM JOBS
+--WHERE JOB_IDENT IN (select JOB_ID from EMPLOYEES where YEAR(B_DATE) > '1976')
+
+-- Retrieve JOB information for female employees whose birth year is after 1976. 
+
+--SELECT JOB_TITLE, MIN_SALARY, MAX_SALARY, JOB_IDENT FROM JOBS
+--WHERE JOB_IDENT IN (select JOB_ID from EMPLOYEES where YEAR(B_DATE) > '1976' and SEX = 'F')
+
+-- Exercise 2: Accessing Multiple Tables with Implicit Joins
+
+-- Perform an implicit cartesian/cross join between EMPLOYEES and JOBS tables.
+
+--SELECT * FROM EMPLOYEES, JOBS
+
+-- Retrieve only the EMPLOYEES records that correspond to jobs in the JOBS table.
+
+-- SELECT EMP_ID, F_NAME, L_NAME, DEP_ID, B_DATE, SEX, JOB_IDENT, JOB_TITLE FROM EMPLOYEES ,JOBS 
+-- WHERE EMPLOYEES.JOB_ID = JOBS.JOB_IDENT
+
+-- Redo the previous query, using shorter aliases for table names.
+
+-- SELECT EMP_ID, F_NAME, L_NAME, DEP_ID, B_DATE, SEX, JOB_IDENT, JOB_TITLE FROM EMPLOYEES E,JOBS J
+-- WHERE E.JOB_ID = J.JOB_IDENT
+
+-- Redo the previous query, but specify the fully qualified column names with aliases in the SELECT clause.
+
+--SELECT E.EMP_ID, E.F_NAME, E.L_NAME, E.DEP_ID, E.B_DATE, E.SEX, J.JOB_IDENT, J.JOB_TITLE FROM EMPLOYEES E,JOBS J
+--WHERE E.JOB_ID = J.JOB_IDENT
